@@ -136,11 +136,20 @@ function ObjectCell(props: { value: any }) {
 	);
 }
 
-function GeographyPointCell({ value }: { value: GeometryPoint; }) {
+function GeographyPointCell({ value }: { value: GeometryPoint }) {
 	const [long, lat] = value.point;
-	const converted = convert(`${lat} ${long}`);
-
-	return <GeographyLink value={value} text={converted.toCoordinateFormat("DMS")} />;
+	try {
+		const converted = convert(`${lat.toFixed(6)} ${long.toFixed(6)}`);
+		return (
+			<GeographyLink
+				value={value}
+				text={converted.toCoordinateFormat("DMS")}
+			/>
+		);
+	} catch (err) {
+		console.error(err);
+		return <GeographyLink value={value} text={`${long} ${lat}`} />;
+	}
 }
 
 function GeographyLineStringCell({ value }: { value: GeometryLine; }) {
